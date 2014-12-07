@@ -35,7 +35,7 @@ var dummyQuery = '"test test play 2048 one two" ' + date + ' -from:GadgetInforme
 
 
 getPublicTweet = function (cb) {
-	t.get('search/tweets', {q: dummyQuery, count: 1}, function (err, data, response) {
+	t.get('search/tweets', {q: query, count: 1}, function (err, data, response) {
 		if (!err) {
 			var botData = {
 				baseTweet: data.statuses[0].text.toLowerCase(),
@@ -65,7 +65,7 @@ verifyTweet = function (botData, cb) {
 formatTweet = function (botData, cb) {
 	var tweetUser = "@" + botData.tweetUsername;
 	// var tweet = tweetUser + "Did you know 2048 is a clone of Threes? http://asherv.com/threes/threemails/";
-	var tweet = "I found someone tweeting about 2048. This is a test.";
+	var tweet = "Someone tweeted 'play 2048' today!";
 	botData.tweetBlock = tweet;
 	cb(null, botData);
 }
