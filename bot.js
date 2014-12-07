@@ -37,6 +37,7 @@ var dummyQuery = '"test test play 2048 one two" ' + date + ' -from:GadgetInforme
 getPublicTweet = function (cb) {
 	t.get('search/tweets', {q: 'play 2048', count: 1}, function (err, data, response) {
 		if (!err) {
+			console.log(data);
 			var botData = {
 				baseTweet: data.statuses[0].text.toLowerCase(),
 				tweetID: data.statuses[0].id_str,
