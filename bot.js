@@ -1,5 +1,8 @@
+var _ = require('lodash');
+var Client = require('node-rest-client').Client;
 var Twit = require('twit'); 
 var async = require('async');
+var wordFilter = require('wordfilter');
 
 var t = new Twit({
 	consumer_key: 			process.BOT_CONSUMER_KEY,
