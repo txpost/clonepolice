@@ -1,14 +1,14 @@
 {
-  "name": "botxmas",
+  "name": "clonepolice",
   "version": "1.0.0",
-  "description": "Keep tracks of the number of days until Christmas.",
-  "main": "index.js",
+  "description": "Tells Twitter users that 2048 is a clone of Threes.",
+  "main": "bot.js",
   "scripts": {
-    "test": "hello"
+    "start": "node bot.js"
   },
   "keywords": [
     "bot",
-    "christmas",
+    "clones",
     "twitter"
   ],
   "author": "@trevpost",
