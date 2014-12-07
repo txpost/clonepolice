@@ -1,0 +1,22 @@
+{
+  "name": "botxmas",
+  "version": "1.0.0",
+  "description": "Keep tracks of the number of days until Christmas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "hello"
+  },
+  "keywords": [
+    "bot",
+    "christmas",
+    "twitter"
+  ],
+  "author": "@trevpost",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "node-rest-client": "^1.4.1",
+    "twit": "^1.1.18",
+    "wordfilter": "^0.1.7"
+  }
+}
