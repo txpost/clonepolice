@@ -1,8 +1,5 @@
-var _ = require('lodash');
-var Client = require('node-rest-client').Client;
 var Twit = require('twit'); 
 var async = require('async');
-var wordFilter = require('wordfilter');
 
 var t = new Twit({
 	consumer_key: 			process.BOT_CONSUMER_KEY,
@@ -11,9 +8,72 @@ var t = new Twit({
 	access_token_secret: 	process.env.BOT_ACCESS_TOKEN_SECRET
 });
 
-if (!SINCE_ID) {
-	var SINCE_ID = 0;
-};
+
+getDate = function () {
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1;
+	var yyyy = today.getFullYear();
+	if (dd < 10) {
+		dd = '0' + dd;
+	};
+	if (mm < 10) {
+		mm = '0' + mm;
+	};
+	today = yyyy + "-" + mm + "-" + dd;
+	return today;
+}
+
+var date = getDate();
+
+// "play 2048" since:2014-12-07 -from:GadgetInformer
+var query = '"play 2048" since:' + date + ' -from:GadgetInformer';
+var dummyQuery = '"test test play 2048 one two" ' + date + ' -from:GadgetInformer';
+
+
+getPublicTweet = function (cb) {
+	t.get('search/tweets', {q: dummyQuery, count: 1}, function (err, data, response) {
+		if (!err) {
+			var botData = {
+				baseTweet: data.statuses[0].text.toLowerCase(),
+				tweetID: data.statuses[0].id_str,
+				tweetUsername: data.statuses[0].user.screen_name
+			};
+			SINCE_ID = botData.tweetID;
+			cb(null, botData);
+		} else {
+			console.log("There was an error getting a public Tweet. ABORT!");
+			cb(err, botData);
+		}
+	});
+}
+
+
+verifyTweet = function (botData, cb) {
+	var match2048 = botData.baseTweet.match(/2048/);
+	if(match2048) {
+		cb(null, botData);
+	} else {
+		console.log("It appears 2048 isn't in the text. Must be in the date. ABORT!");
+		cb(err, botData);
+	}
+}
+
+
+formatTweet = function (botData, cb) {
+	var tweetUser = "@" + botData.tweetUsername;
+	var tweet = tweetUser + "Did you know 2048 is a clone of Threes? http://asherv.com/threes/threemails/";
+	botData.tweetBlock = tweet;
+	cb(null, botData);
+}
+
+
+postTweet = function (botData, cb) {
+	t.post('statuses/update', {status: botData.tweetBlock}, function (err, data, response) {
+		cb(err, botData);
+	});
+}
+
 
 run = function () {
 	async.waterfall([
@@ -33,46 +93,8 @@ run = function () {
 	});
 }
 
-getPublicTweet = function (cb) {
-	t.get('search/tweets', {q: '"play 2048"', count: 1, since_id: SINCE_ID}, function (err, data, response) {
-		if (!err) {
-			var botData = {
-				baseTweet: data.statuses[0].text.toLowerCase(),
-				tweetID: data.statuses[0].id_str,
-				tweetUsername: data.statuses[0].user.screen_name
-			};
-			SINCE_ID = botData.tweetID;
-			cb(null, botData);
-		} else {
-			console.log("There was an error getting a public Tweet. ABORT!");
-			cb(err, botData);
-		}
-	});
-}
 
-// verifyTweet = function (botData, cb) {
-// 	var match2048 = botData.baseTweet.match(/2048/);
-// 	if(match2048) {
-// 		cb(null, botData);
-// 	} else {
-// 		console.log("It appears 2048 isn't in the text. Must be in the date. ABORT!");
-// 		cb(err, botData);
-// 	}
-// }
-
-formatTweet = function (botData, cb) {
-	var tweetUser = "@" + botData.tweetUsername;
-	var tweet = tweetUser + "Did you know 2048 is a clone of Threes? http://asherv.com/threes/threemails/";
-	botData.tweetBlock = tweet;
-	cb(null, botData);
-}
-
-postTweet = function (botData, cb) {
-	t.post('statuses/update', {status: botData.tweetBlock}, function (err, data, response) {
-		cb(err, botData);
-	});
-}
-
+// run once a day: 60000 * 60 * 24
 setInterval(function () {
 	try {
 		run();
@@ -80,4 +102,4 @@ setInterval(function () {
 	catch (e) {
 		console.log(e);
 	}
-}, 60000 * 60);
+}, 60000 * 10);
