@@ -35,15 +35,13 @@ var dummyQuery = '"test test play 2048 one two" ' + date + ' -from:GadgetInforme
 
 
 getPublicTweet = function (cb) {
-	t.get('search/tweets', {q: 'play 2048', count: 1}, function (err, data, response) {
+	t.get('search/tweets', {q: dummyQuery, count: 1}, function (err, data, response) {
 		if (!err) {
-			console.log("I'm logging some errors" + data);
 			var botData = {
 				baseTweet: data.statuses[0].text.toLowerCase(),
 				tweetID: data.statuses[0].id_str,
 				tweetUsername: data.statuses[0].user.screen_name
 			};
-			SINCE_ID = botData.tweetID;
 			cb(null, botData);
 		} else {
 			console.log("There was an error getting a public Tweet. ABORT!");
