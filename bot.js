@@ -31,8 +31,6 @@ var date = getDate();
 
 // "play 2048" since:2014-12-07 -from:GadgetInformer
 var query = '"play 2048" since:' + date + ' -from:GadgetInformer';
-var dummyQuery = '"test test play 2048 one two" ' + date + ' -from:GadgetInformer';
-
 
 getPublicTweet = function (cb) {
 	t.get('search/tweets', {q: query, count: 1}, function (err, data, response) {
@@ -64,8 +62,7 @@ verifyTweet = function (botData, cb) {
 
 formatTweet = function (botData, cb) {
 	var tweetUser = "@" + botData.tweetUsername;
-	var tweet = "I see " + botData.tweetUsername + " is playing 2048, which is a clone of Threes? http://asherv.com/threes/threemails/";
-	// var tweet = "Someone tweeted 'play 2048' today!";
+	var tweet = tweetUser + " Did you know 2048 is a clone of Threes? http://asherv.com/threes/threemails/";
 	botData.tweetBlock = tweet;
 	cb(null, botData);
 }
@@ -97,7 +94,7 @@ run = function () {
 }
 
 
-// run once a day: 60000 * 60 * 24
+// run every three hours
 setInterval(function () {
 	try {
 		run();
@@ -105,4 +102,4 @@ setInterval(function () {
 	catch (e) {
 		console.log(e);
 	}
-}, 60000 * 10);
+}, 60000 * 60 * 3);
