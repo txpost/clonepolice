@@ -4,6 +4,7 @@ var Twit = require('twit');
 var async = require('async');
 var wordFilter = require('wordfilter');
 
+// authentication for the Twitter API
 var t = new Twit({
 	consumer_key: 			process.env.BOT_CONSUMER_KEY,
 	consumer_secret: 		process.env.BOT_CONSUMER_SECRET,
@@ -11,7 +12,7 @@ var t = new Twit({
 	access_token_secret: 	process.env.BOT_ACCESS_TOKEN_SECRET
 });
 
-
+// get today's date for query
 getDate = function () {
 	var today = new Date();
 	var dd = today.getDate();
@@ -32,6 +33,8 @@ var date = getDate();
 // "play 2048" since:2014-12-07 -from:GadgetInformer
 var query = '"play 2048" since:' + date + ' -from:GadgetInformer';
 
+
+// get the most recent tweet that matches our query
 getPublicTweet = function (cb) {
 	t.get('search/tweets', {q: query, count: 1}, function (err, data, response) {
 		if (!err) {
@@ -49,6 +52,7 @@ getPublicTweet = function (cb) {
 }
 
 
+// make sure '2048' is in the tweet rather than the date
 verifyTweet = function (botData, cb) {
 	var match2048 = botData.baseTweet.match(/2048/);
 	if(match2048) {
@@ -60,14 +64,16 @@ verifyTweet = function (botData, cb) {
 }
 
 
+// compose the tweet
 formatTweet = function (botData, cb) {
 	var tweetUser = "@" + botData.tweetUsername;
-	var tweet = tweetUser + " Did you know 2048 is a clone of Threes? http://asherv.com/threes/threemails/";
+	var tweet = "Hey " + tweetUser + "! Did you know 2048 is a clone of Threes? http://asherv.com/threes/threemails/";
 	botData.tweetBlock = tweet;
 	cb(null, botData);
 }
 
 
+// post the tweet
 postTweet = function (botData, cb) {
 	t.post('statuses/update', {status: botData.tweetBlock}, function (err, data, response) {
 		cb(err, botData);
@@ -75,6 +81,7 @@ postTweet = function (botData, cb) {
 }
 
 
+// run each function in sequence
 run = function () {
 	async.waterfall([
 		getPublicTweet,
