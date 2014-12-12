@@ -1,5 +1,3 @@
-var _ = require('lodash');
-var Client = require('node-rest-client').Client;
 var Twit = require('twit'); 
 var async = require('async');
 var wordFilter = require('wordfilter');
@@ -11,6 +9,7 @@ var t = new Twit({
 	access_token: 			process.env.BOT_ACCESS_TOKEN,
 	access_token_secret: 	process.env.BOT_ACCESS_TOKEN_SECRET
 });
+
 
 // get today's date for query
 getDate = function () {
@@ -28,14 +27,14 @@ getDate = function () {
 	return today;
 }
 
-var date = getDate();
-
-// "play 2048" since:2014-12-07 -from:GadgetInformer
-var query = '"play 2048" since:' + date + ' -from:GadgetInformer';
-
 
 // get the most recent tweet that matches our query
 getPublicTweet = function (cb) {
+	var date = getDate();
+
+	// "play 2048" since:2014-12-07 -from:GadgetInformer
+	var query = '"play 2048" since:' + date + ' -from:GadgetInformer';
+
 	t.get('search/tweets', {q: query, count: 1}, function (err, data, response) {
 		if (!err) {
 			var botData = {
