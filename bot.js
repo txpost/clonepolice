@@ -1,6 +1,5 @@
 var Twit = require('twit'); 
 var async = require('async');
-var wordFilter = require('wordfilter');
 
 // authentication for the Twitter API
 var t = new Twit({
