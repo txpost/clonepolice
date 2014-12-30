@@ -27,12 +27,13 @@ getDate = function () {
 }
 
 
+
 // get the most recent tweet that matches our query
 getPublicTweet = function (cb) {
 	var date = getDate();
 
 	// "play 2048" since:2014-12-07 -from:GadgetInformer
-	var query = '"play 2048" since:' + date + ' -from:GadgetInformer';
+	var query = '"play 2048" since:' + date + ' -from:GadgetInformer -from:BuzzzChomp';
 
 	t.get('search/tweets', {q: query, count: 1}, function (err, data, response) {
 		if (!err) {
